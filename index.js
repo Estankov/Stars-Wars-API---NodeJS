@@ -1,6 +1,5 @@
 const fs = require('fs/promises');
 const marked = require('marked');
-const axios = require('axios');
 
 const engine = (template, ...data) => {
   return template.map((s, i) => s + `${data[i] || ''}`).join('')
@@ -36,9 +35,12 @@ ${items.map(item => {
 }
 
 async function* paginate() {
+
     let page = 1
     let result;
+
     while (!result || result.status === 200) {
+
       try {
         result = await (fetch(`https://swapi.dev/api/people/?page=${page}`).then(res => res.json()))
         page++
@@ -46,18 +48,24 @@ async function* paginate() {
       } catch (e) {
         return e
       }
+
     }
+
   };
 
   const getData = async () => {
+
     let results = []
+
     for await (const data of paginate()) {
       results = results.concat(data.results)
     }
+
     return {
       count: results.length,
       results
     }
+
   };
 
   getData()
